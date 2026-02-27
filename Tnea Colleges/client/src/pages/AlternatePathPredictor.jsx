@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Target, Brain, Award, AlertTriangle, TrendingUp, CheckCircle, BookOpen } from 'lucide-react';
-import axios from 'axios';
+import api from '../services/api';
 
 // --- SUB COMPONENTS MOVED OUTSIDE TO FIX RE-RENDER COMPOSITION ISSUES ---
 
@@ -308,7 +308,7 @@ const AlternatePathPredictor = () => {
         // Fetch domains on load
         const fetchDomains = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/alternate-path/domains');
+                const res = await api.get('/api/alternate-path/domains');
                 setDomains(res.data);
             } catch (err) {
                 console.error("Failed to fetch domains", err);
@@ -333,7 +333,7 @@ const AlternatePathPredictor = () => {
     const handlePredict = async () => {
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:5000/api/alternate-path/predict', {
+            const res = await api.post('/api/alternate-path/predict', {
                 careerDomain: selectedDomain,
                 physics: academicProfile.physics,
                 chemistry: academicProfile.chemistry,

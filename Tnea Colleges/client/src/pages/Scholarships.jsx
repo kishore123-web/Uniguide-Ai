@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import Navbar from '../components/Navbar';
 import {
     Loader2, GraduationCap, Banknote, FileText, Search,
@@ -20,7 +20,7 @@ const Scholarships = () => {
         const fetchScholarships = async () => {
             try {
                 // Use 127.0.0.1 for stability
-                const response = await axios.get('http://127.0.0.1:5000/api/scholarships');
+                const response = await api.get('/api/scholarships');
                 setScholarships(response.data);
                 setFilteredScholarships(response.data);
                 setLoading(false);
@@ -105,8 +105,8 @@ const Scholarships = () => {
                                     key={cat}
                                     onClick={() => setActiveCategory(cat)}
                                     className={`whitespace-nowrap px-4 py-2 rounded-lg text-sm font-bold transition-all border ${activeCategory === cat
-                                            ? 'bg-[#1e3a8a] text-white border-[#1e3a8a] shadow-lg shadow-blue-500/20'
-                                            : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-blue-400'
+                                        ? 'bg-[#1e3a8a] text-white border-[#1e3a8a] shadow-lg shadow-blue-500/20'
+                                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-blue-400'
                                         }`}
                                 >
                                     {cat}

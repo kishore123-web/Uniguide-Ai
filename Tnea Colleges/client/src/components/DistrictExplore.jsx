@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Award, ArrowRight } from 'lucide-react';
-import axios from 'axios';
+import api from '../services/api';
 
 // Top districts to feature as tabs
 const FEATURED_DISTRICTS = ['Chennai', 'Coimbatore', 'Kancheepuram', 'Tiruvallur', 'Others'];
@@ -23,7 +23,7 @@ const DistrictExplore = () => {
             const params = {};
             if (district !== 'Others') params.district = district;
 
-            const res = await axios.get('http://localhost:5000/api/colleges', { params: { ...params, limit: 6 } });
+            const res = await api.get('/api/colleges', { params: { ...params, limit: 6 } });
             setColleges(res.data);
         } catch (err) {
             console.error(err);

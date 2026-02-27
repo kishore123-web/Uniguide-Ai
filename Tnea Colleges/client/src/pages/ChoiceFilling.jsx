@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import Navbar from '../components/Navbar';
 import { motion, Reorder } from 'framer-motion';
 import {
@@ -33,7 +33,7 @@ const ChoiceFilling = () => {
     useEffect(() => {
         const fetchFilters = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/filters');
+                const response = await api.get('/api/filters');
                 if (response.data) {
                     if (response.data.branches) setBranches(['All Branches', ...response.data.branches]);
                     if (response.data.districts) setDistricts(['All Districts', ...response.data.districts]);
@@ -57,7 +57,7 @@ const ChoiceFilling = () => {
 
             const payload = { ...formData, cutoff: calculatedCutoff };
 
-            const res = await axios.post('http://localhost:5000/api/choice-filling/generate', payload);
+            const res = await api.post('/api/choice-filling/generate', payload);
             setChoices(res.data.choices);
             setStep(2);
         } catch (err) {

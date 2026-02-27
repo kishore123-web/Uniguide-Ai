@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { Calculator, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
 
@@ -30,7 +30,7 @@ const PredictorForm = () => {
         const fetchFilters = async () => {
             try {
                 // Use explicit IP to avoid localhost resolution issues
-                const response = await axios.get('http://127.0.0.1:5000/api/filters');
+                const response = await api.get('/api/filters');
                 if (response.data) {
                     if (response.data.branches && response.data.branches.length > 0) {
                         setBranches(['All Branches', ...response.data.branches]);

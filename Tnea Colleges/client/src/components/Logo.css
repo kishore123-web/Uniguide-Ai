@@ -1,0 +1,163 @@
+/* Pure CSS Logo - EduCare Style (Line Art) */
+.uni-logo {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.uni-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Primary Color */
+:root {
+    --logo-color: #0d1b2a;
+    /* Dark Navy for Light Mode */
+    --logo-color-dark: #ffffff;
+    /* White for Dark Mode */
+}
+
+.uni-logo * {
+    box-sizing: border-box;
+}
+
+/* 1. Graduation Cap Top (The Diamond) */
+.uni-logo-cap-top {
+    position: absolute;
+    top: 5px;
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--logo-color);
+    transform: rotate(45deg) skew(10deg, 10deg);
+    border-radius: 4px;
+    /* Slight round */
+    z-index: 5;
+    background: transparent;
+}
+
+.dark .uni-logo-cap-top {
+    border-color: var(--logo-color-dark);
+}
+
+/* 2. Cap Bottom / Tassel point (Small vertical lines) */
+.uni-logo-cap-body {
+    position: absolute;
+    top: 22px;
+    width: 26px;
+    height: 12px;
+    /* clip-path or borders to make the side walls */
+}
+
+.uni-logo-cap-body::before,
+.uni-logo-cap-body::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 100%;
+    background: var(--logo-color);
+    transform: rotate(15deg);
+}
+
+.dark .uni-logo-cap-body::before,
+.dark .uni-logo-cap-body::after {
+    background: var(--logo-color-dark);
+}
+
+.uni-logo-cap-body::before {
+    left: 0;
+    transform: rotate(-15deg);
+}
+
+.uni-logo-cap-body::after {
+    right: 0;
+    transform: rotate(15deg);
+}
+
+
+/* 3. The Pen / Nib (Center Vertical) */
+.uni-logo-pen {
+    position: absolute;
+    bottom: 8px;
+    width: 4px;
+    height: 16px;
+    background: var(--logo-color);
+    border-radius: 2px;
+    z-index: 4;
+}
+
+.dark .uni-logo-pen {
+    background: var(--logo-color-dark);
+}
+
+/* Pen Ball/Dot */
+.uni-logo-pen::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--logo-color);
+    border-radius: 50%;
+}
+
+.dark .uni-logo-pen::before {
+    background: var(--logo-color-dark);
+}
+
+/* 4. The Open Book / Curved Base */
+.uni-logo-book {
+    position: absolute;
+    bottom: 8px;
+    width: 44px;
+    height: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.uni-logo-book-left,
+.uni-logo-book-right {
+    width: 20px;
+    height: 20px;
+    border-bottom: 3.5px solid var(--logo-color);
+    border-radius: 0 0 100% 0;
+    /* Curve effect */
+}
+
+.dark .uni-logo-book-left,
+.dark .uni-logo-book-right {
+    border-color: var(--logo-color-dark);
+}
+
+.uni-logo-book-left {
+    border-radius: 0 0 20px 20px;
+    /* Cup shape for the left side? */
+    /* Actually looking at image: it's like two swooshes meeting in middle */
+    border: none;
+    border-bottom: 3.5px solid var(--logo-color);
+    border-right: 3.5px solid var(--logo-color);
+    border-radius: 0 0 20px 0;
+    transform: rotate(0deg);
+}
+
+.dark .uni-logo-book-left {
+    border-color: var(--logo-color-dark);
+}
+
+.uni-logo-book-right {
+    border: none;
+    border-bottom: 3.5px solid var(--logo-color);
+    border-left: 3.5px solid var(--logo-color);
+    border-radius: 0 0 0 20px;
+}
+
+.dark .uni-logo-book-right {
+    border-color: var(--logo-color-dark);
+}

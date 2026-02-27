@@ -5,6 +5,7 @@ import ResultCard from '../components/ResultCard';
 import Footer from '../components/Footer';
 import CustomDropdown from '../components/CustomDropdown';
 import { ArrowLeft, Loader2, Frown, Sparkles, Search, Filter } from 'lucide-react';
+import api from '../services/api';
 
 const Results = () => {
     const location = useLocation();
@@ -83,40 +84,21 @@ const Results = () => {
                     setError(null);
                 }
 
-                // Use explicit IP to avoid localhost resolution issues
-                const endpoint = 'http://127.0.0.1:5000';
-                let url;
-                let options = {
+                let res;
+                const config = {
                     signal: controller.signal,
-                    headers: { 'Content-Type': 'application/json' }
+                    timeout: 8000
                 };
 
                 if (mode === 'browse') {
                     // Fetch by Tier
-                    url = `${endpoint}/api/colleges?tier=${tier}&limit=100`;
+                    res = await api.get(`/api/colleges?tier=${tier}&limit=100`, config);
                 } else {
                     // Prediction
-                    url = `${endpoint}/api/predict`;
-                    options.method = 'POST';
-                    options.body = JSON.stringify(formData);
+                    res = await api.post('/api/predict', formData, config);
                 }
 
-                console.log(`[Request] ${options.method || 'GET'} ${url}`);
-
-                // Race the fetch against a strict timeout promise
-                const fetchPromise = fetch(url, options);
-                const timeoutPromise = new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error("Timeout")), 8000)
-                );
-
-                const res = await Promise.race([fetchPromise, timeoutPromise]);
-
-                if (!res.ok) {
-                    const errorText = await res.text();
-                    throw new Error(`Server Error (${res.status}): ${errorText}`);
-                }
-
-                const data = await res.json();
+                const data = res.data;
                 console.log("Data parsed, length:", data?.length);
 
                 if (isMounted) {
@@ -131,13 +113,13 @@ const Results = () => {
             } catch (err) {
                 console.error("Fetch Logic Error:", err);
                 if (isMounted) {
-                    if (err.name === 'AbortError') {
+                    if (err.name === 'AbortError' || err.name === 'CanceledError') {
                         // Ignore aborts
-                    } else if (err.message === 'Timeout') {
+                    } else if (err.code === 'ECONNABORTED' || err.message === 'Timeout') {
                         setError("Request timed out. Server took too long.");
                         controller.abort(); // Cancel the actual request
                     } else {
-                        setError(`Error: ${err.message}`);
+                        setError(`Error: ${err.response?.data?.error || err.message}`);
                     }
                 }
             } finally {

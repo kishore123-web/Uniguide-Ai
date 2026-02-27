@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { MapPin, BookOpen, Globe, Phone, Mail, Award, CheckCircle, Star, User, TrendingUp, ExternalLink } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import api from '../services/api';
 
 const CollegeDetails = () => {
     const { id } = useParams();
@@ -20,13 +21,8 @@ const CollegeDetails = () => {
 
             try {
                 // Fetch College
-                const collegeRes = await fetch(`http://127.0.0.1:5000/api/college/${id}`);
-
-                if (!collegeRes.ok) {
-                    throw new Error(`College fetch failed: ${collegeRes.statusText}`);
-                }
-
-                const collegeData = await collegeRes.json();
+                const res = await api.get(`/api/college/${id}`);
+                const collegeData = res.data;
 
                 if (collegeData && !collegeData.error) {
                     const placementStats = getPlacementStats(collegeData.tier || '3');
@@ -38,10 +34,8 @@ const CollegeDetails = () => {
                     if (collegeData.code) {
                         try {
                             // Fetch Available Branches
-                            const branchesRes = await fetch(`http://127.0.0.1:5000/api/college_branches/${collegeData.code}`);
-                            if (branchesRes.ok) {
-                                branchesData = await branchesRes.json();
-                            }
+                            const branchesRes = await api.get(`/api/college_branches/${collegeData.code}`);
+                            branchesData = branchesRes.data;
                         } catch (e) {
                             console.warn("Branch fetch failed", e);
                         }
@@ -63,13 +57,9 @@ const CollegeDetails = () => {
                     // Fetch Reviews
                     if (collegeData.code) {
                         try {
-                            const reviewsRes = await fetch(`http://127.0.0.1:5000/api/reviews/${collegeData.code}`);
-                            if (reviewsRes.ok) {
-                                const reviewsData = await reviewsRes.json();
-                                setReviews(reviewsData.length > 0 ? reviewsData : generateReviews(collegeData));
-                            } else {
-                                setReviews(generateReviews(collegeData));
-                            }
+                            const reviewsRes = await api.get(`/api/reviews/${collegeData.code}`);
+                            const reviewsData = reviewsRes.data;
+                            setReviews(reviewsData.length > 0 ? reviewsData : generateReviews(collegeData));
                         } catch (e) {
                             console.warn("Reviews fetch failed", e);
                             setReviews(generateReviews(collegeData));
@@ -93,22 +83,16 @@ const CollegeDetails = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const response = await fetch('http://127.0.0.1:5000/api/reviews', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    collegeCode: id,
-                    ...reviewForm
-                })
+            const response = await api.post('/api/reviews', {
+                collegeCode: id,
+                ...reviewForm
             });
 
-            if (response.ok) {
-                const newReview = await response.json();
-                setReviews([newReview, ...reviews]);
-                setIsReviewModalOpen(false);
-                setReviewForm({ user: '', rating: 5, comment: '' });
-                alert("Review submitted successfully!");
-            }
+            const newReview = response.data;
+            setReviews([newReview, ...reviews]);
+            setIsReviewModalOpen(false);
+            setReviewForm({ user: '', rating: 5, comment: '' });
+            alert("Review submitted successfully!");
         } catch (error) {
             console.error("Failed to submit review", error);
             alert("Error submitting review. Please try again.");
